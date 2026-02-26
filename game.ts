@@ -63,17 +63,17 @@ const MODEL_PRESETS: Record<AIProvider, ModelPreset[]> = {
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
     { id: "google/gemma-2-9b-it", name: "Gemma 2 9B" },
     { id: "meta-llama/llama-3.3-70b-instruct", name: "Llama 3.3 70B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "microsoft/phi-4:free", name: "Phi-4", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "qwen/qwq-32b:free", name: "Qwen QwQ 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "deepseek/deepseek-chat-v3-0324", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "qwen/qwen-2.5-32b-instruct", name: "Qwen 2.5 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
   "openai-compatible": [
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
     { id: "google/gemma-2-9b-it", name: "Gemma 2 9B" },
     { id: "meta-llama/llama-3.3-70b-instruct", name: "Llama 3.3 70B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "microsoft/phi-4:free", name: "Phi-4", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "qwen/qwq-32b:free", name: "Qwen QwQ 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "deepseek/deepseek-chat-v3-0324", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "qwen/qwen-2.5-32b-instruct", name: "Qwen 2.5 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
 };
 
@@ -610,6 +610,22 @@ export async function runGame(
     rerender();
 
     void prefetchStackOverflowQuestions(5);
+
+    // Configurable delay between rounds
+    if (state.roundDelayMs > 0) {
+      state.nextRoundAt = Date.now() + state.roundDelayMs;
+      rerender();
+
+      while (Date.now() < (state.nextRoundAt ?? 0)) {
+        if (state.generation !== roundGeneration) break;
+        if (state.isPaused) break;
+        await sleep(1000);
+        rerender();
+      }
+
+      state.nextRoundAt = undefined;
+      rerender();
+    }
   }
 
   if (runs !== Infinity) {

@@ -14,6 +14,8 @@ type ClientGameState = {
   done: boolean;
   isPaused: boolean;
   generation: number;
+  roundDelayMs: number;
+  nextRoundAt?: number;
 };
 
 type StateMessage = {
@@ -35,9 +37,9 @@ const MODEL_COLORS: Record<string, string> = {
   "Llama 3.1 8B": "#f59e0b",
   "Gemma 2 9B": "#D97757",
   "Llama 3.3 70B": "#a78bfa",
-  "Mistral Small": "#22d3ee",
-  "Phi-4": "#34d399",
-  "Qwen QwQ 32B": "#38bdf8",
+  "DeepSeek V3": "#22d3ee",
+  "Mistral Nemo": "#34d399",
+  "Qwen 2.5 32B": "#38bdf8",
   "Stack Overflow": "#f97316",
 };
 
@@ -45,9 +47,9 @@ const MODEL_LOGOS: Record<string, string> = {
   "Llama 3.1 8B": "/assets/logos/llama.svg",
   "Gemma 2 9B": "/assets/logos/gemma.svg",
   "Llama 3.3 70B": "/assets/logos/llama.svg",
-  "Mistral Small": "/assets/logos/mistral.svg",
-  "Phi-4": "/assets/logos/phi.svg",
-  "Qwen QwQ 32B": "/assets/logos/qwen.svg",
+  "DeepSeek V3": "/assets/logos/deepseek.svg",
+  "Mistral Nemo": "/assets/logos/mistral.svg",
+  "Qwen 2.5 32B": "/assets/logos/qwen.svg",
   "Stack Overflow": "/assets/logos/stackoverflow.svg",
 };
 
@@ -446,18 +448,11 @@ function JudgeLeaderboard({
 function SidePanel({
   state,
   viewerCount,
-  selectedLanguage,
-  onSelectLanguage,
 }: {
   state: ClientGameState;
   viewerCount: number;
-  selectedLanguage: string;
-  onSelectLanguage: (language: string) => void;
 }) {
-  const languages = useMemo(() => {
-    const keys = Object.keys(state.languageScores ?? {});
-    return ["all", ...keys.filter((key) => key !== "all").sort()];
-  }, [state.languageScores]);
+  const selectedLanguage = "all";
 
   const answererEntries = useMemo(() => {
     const board = state.languageScores[selectedLanguage] ?? {};
@@ -475,7 +470,7 @@ function SidePanel({
         };
       })
       .sort((a, b) => (b.wins !== a.wins ? b.wins - a.wins : b.rounds - a.rounds));
-  }, [state.languageScores, state.scores, selectedLanguage]);
+  }, [state.languageScores, state.scores]);
 
   const judgeEntries = useMemo(() => {
     const board = state.languageScores[selectedLanguage] ?? {};
@@ -492,7 +487,7 @@ function SidePanel({
         };
       })
       .sort((a, b) => (b.judgeWins !== a.judgeWins ? b.judgeWins - a.judgeWins : b.judgeRounds - a.judgeRounds));
-  }, [state.languageScores, state.scores, selectedLanguage]);
+  }, [state.languageScores, state.scores]);
 
   return (
     <aside className="space-y-4 lg:sticky lg:top-4 lg:h-fit">
@@ -506,37 +501,15 @@ function SidePanel({
             <span className="text-sm text-zinc-400">Engine</span>
             <Badge variant="outline">{state.isPaused ? "Paused" : "Running"}</Badge>
           </div>
-          <div className="space-y-2">
-            <p className="text-xs text-zinc-500">Language filter</p>
-            <div className="flex flex-wrap gap-2">
-              {languages.map((language) => (
-                <Button
-                  key={language}
-                  size="sm"
-                  variant={selectedLanguage === language ? "default" : "outline"}
-                  onClick={() => onSelectLanguage(language)}
-                >
-                  {language}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <AnswererLeaderboard title={`Answerer standings (${selectedLanguage})`} entries={answererEntries} />
-      <JudgeLeaderboard title={`Judge standings (${selectedLanguage})`} entries={judgeEntries} />
-
-      <Card className="border-zinc-800 bg-zinc-950/80">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-zinc-200">Links</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm text-zinc-300">
-          <a className="block hover:text-white" href="/history">
-            Match history
+          <a className="flex items-center justify-between rounded-md border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white" href="/history">
+            <span>Match history</span>
+            <span className="text-zinc-500">→</span>
           </a>
         </CardContent>
       </Card>
+
+      <AnswererLeaderboard title="Answerer standings" entries={answererEntries} />
+      <JudgeLeaderboard title="Judge standings" entries={judgeEntries} />
     </aside>
   );
 }
@@ -548,7 +521,6 @@ function App() {
   const [totalRounds, setTotalRounds] = useState<number | null>(null);
   const [votingSecondsLeft, setVotingSecondsLeft] = useState(0);
   const [myVote, setMyVote] = useState<"A" | "B" | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState("all");
 
   useEffect(() => {
     const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -618,12 +590,6 @@ function App() {
     return state.active ?? state.lastCompleted;
   }, [state]);
 
-  useEffect(() => {
-    if (!state) return;
-    if (!state.languageScores[selectedLanguage]) {
-      setSelectedLanguage("all");
-    }
-  }, [state, selectedLanguage]);
 
   async function castVote(side: "A" | "B") {
     try {
@@ -644,6 +610,11 @@ function App() {
     }
   }
 
+  const delaySecondsLeft = useMemo(() => {
+    if (!state?.nextRoundAt) return 0;
+    return Math.max(0, Math.ceil((state.nextRoundAt - Date.now()) / 1000));
+  }, [state?.nextRoundAt, state?.generation]);
+
   if (!connected || !state) {
     return (
       <main className="loading-screen flex min-h-screen items-center justify-center px-4">
@@ -659,19 +630,32 @@ function App() {
 
   return (
     <div className="app-shell min-h-screen bg-[#090909] text-zinc-100">
-      <div className="mx-auto max-w-[1500px] px-4 py-4 lg:px-6 lg:py-6">
+      <div className="mx-auto max-w-[1500px] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-6">
         <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <a href="/" className="inline-flex items-center gap-2">
             <img src="/assets/logo.svg" alt="bruh.help" className="h-7 w-auto" />
           </a>
           <div className="flex items-center gap-2">
             {state.isPaused ? <Badge variant="outline">Paused</Badge> : null}
-            <Badge variant="outline">Live AI fixes for Stack Overflow errors</Badge>
+            <Badge variant="outline" className="hidden sm:inline-flex">Live AI fixes for Stack Overflow errors</Badge>
           </div>
         </header>
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-          <main className="space-y-4">
+        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <main className="min-w-0 space-y-4">
+            {delaySecondsLeft > 0 && !displayRound ? (
+              <Card className="border-sky-800/40 bg-sky-950/20">
+                <CardContent className="flex items-center gap-3 p-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-sky-700/50 bg-sky-900/30">
+                    <span className="text-lg font-bold text-sky-400">{delaySecondsLeft}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-sky-300">Next round in {delaySecondsLeft}s</p>
+                    <p className="text-xs text-zinc-500">Delay between rounds to keep API costs low. Sit tight!</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
             {displayRound ? (
               <Arena
                 round={displayRound}
@@ -680,18 +664,16 @@ function App() {
                 onVote={castVote}
                 votingSecondsLeft={votingSecondsLeft}
               />
-            ) : (
+            ) : delaySecondsLeft <= 0 ? (
               <Card className="border-zinc-800 bg-zinc-950/80">
                 <CardContent className="p-8 text-center text-zinc-400">Waiting for the next round.</CardContent>
               </Card>
-            )}
+            ) : null}
           </main>
 
           <SidePanel
             state={state}
             viewerCount={viewerCount}
-            selectedLanguage={selectedLanguage}
-            onSelectLanguage={setSelectedLanguage}
           />
         </div>
       </div>

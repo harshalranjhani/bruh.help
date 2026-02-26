@@ -75,4 +75,6 @@ export type GameState = {
   done: boolean;
   isPaused: boolean;
   generation: number;
+  roundDelayMs: number;
+  nextRoundAt?: number;
 };

@@ -64,6 +64,7 @@ const gameState: GameState = {
   done: false,
   isPaused: false,
   generation: 0,
+  roundDelayMs: 180_000,
 };
 
 // Guardrails
@@ -253,6 +254,8 @@ function getClientState() {
     done: gameState.done,
     isPaused: gameState.isPaused,
     generation: gameState.generation,
+    roundDelayMs: gameState.roundDelayMs,
+    nextRoundAt: gameState.nextRoundAt,
   };
 }
 
@@ -323,6 +326,7 @@ function getAdminSnapshot() {
     persistedRounds: countRounds(),
     viewerCount: clients.size,
     questionDifficulty: getQuestionDifficulty(),
+    roundDelayMs: gameState.roundDelayMs,
   };
 }
 
@@ -631,6 +635,41 @@ const server = Bun.serve<WsData>({
           "Cache-Control": "no-store",
         },
       });
+    }
+
+    if (url.pathname === "/api/admin/delay") {
+      if (req.method !== "POST") {
+        return new Response("Method Not Allowed", {
+          status: 405,
+          headers: { Allow: "POST" },
+        });
+      }
+      if (isRateLimited(`admin:${ip}`, ADMIN_LIMIT_PER_MIN, WINDOW_MS)) {
+        return new Response("Too Many Requests", { status: 429 });
+      }
+      if (!isAdminAuthorized(req, url)) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      try {
+        const body = (await req.json()) as Record<string, unknown>;
+        const ms = Number(body.delayMs);
+        if (!Number.isFinite(ms) || ms < 0 || ms > 600_000) {
+          return new Response("delayMs must be 0-600000", { status: 400 });
+        }
+        gameState.roundDelayMs = ms;
+        log("INFO", "admin", "Round delay changed", { delayMs: ms });
+
+        return new Response(JSON.stringify({ ok: true, ...getAdminSnapshot() }), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+          },
+        });
+      } catch {
+        return new Response("Invalid JSON body", { status: 400 });
+      }
     }
 
     if (url.pathname === "/api/history") {

@@ -36,6 +36,7 @@ function logoFor(name: string) {
   if (name.includes("Llama")) return "/assets/logos/llama.svg";
   if (name.includes("Gemma")) return "/assets/logos/gemma.svg";
   if (name.includes("Qwen")) return "/assets/logos/qwen.svg";
+  if (name.includes("DeepSeek")) return "/assets/logos/deepseek.svg";
   if (name.includes("Mistral")) return "/assets/logos/mistral.svg";
   if (name.includes("Phi")) return "/assets/logos/phi.svg";
   if (name.includes("Stack Overflow")) return "/assets/logos/stackoverflow.svg";
@@ -244,9 +245,6 @@ function App() {
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wide text-zinc-400">
             <a href="/" className="hover:text-orange-300">
               live arena
-            </a>
-            <a href="/admin" className="hover:text-orange-300">
-              admin
             </a>
           </div>
         </header>

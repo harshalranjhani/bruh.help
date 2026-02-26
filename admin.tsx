@@ -11,6 +11,7 @@ type AdminSnapshot = {
   persistedRounds: number;
   viewerCount: number;
   questionDifficulty?: "easy" | "medium" | "hard";
+  roundDelayMs?: number;
 };
 
 type AdminResponse = { ok: true } & AdminSnapshot;
@@ -337,6 +338,52 @@ function App() {
               <p><strong className="text-zinc-400">Medium</strong> — Recent error questions across languages</p>
               <p><strong className="text-zinc-400">Hard</strong> — Fresh exception/debugging questions</p>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-zinc-800 bg-zinc-950/85">
+          <CardHeader>
+            <CardTitle className="font-display text-3xl uppercase tracking-wide text-zinc-100">Round Delay</CardTitle>
+            <p className="text-xs text-zinc-400">Wait time between rounds to reduce API costs</p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: "None", ms: 0 },
+                { label: "1 min", ms: 60_000 },
+                { label: "2 min", ms: 120_000 },
+                { label: "3 min", ms: 180_000 },
+                { label: "5 min", ms: 300_000 },
+                { label: "10 min", ms: 600_000 },
+              ].map(({ label, ms }) => (
+                <Button
+                  key={ms}
+                  variant={snapshot?.roundDelayMs === ms ? "default" : "outline"}
+                  className="flex-1"
+                  disabled={busy}
+                  onClick={async () => {
+                    setError(null);
+                    setPending("delay");
+                    try {
+                      const data = await requestAdminJson("/api/admin/delay", {
+                        method: "POST",
+                        body: JSON.stringify({ delayMs: ms }),
+                      });
+                      setSnapshot(data);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Failed to set delay");
+                    } finally {
+                      setPending(null);
+                    }
+                  }}
+                >
+                  {pending === "delay" ? "..." : label}
+                </Button>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-zinc-500">
+              Current: <strong className="text-zinc-400">{snapshot?.roundDelayMs ? `${Math.round((snapshot.roundDelayMs) / 60_000)} min` : "None"}</strong>. Higher delays = lower API costs.
+            </p>
           </CardContent>
         </Card>
       </div>
