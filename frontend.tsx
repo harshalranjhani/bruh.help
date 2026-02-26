@@ -642,7 +642,7 @@ function App() {
       <div className="mx-auto max-w-[1500px] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-6">
         <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <a href="/" className="inline-flex items-center gap-2">
-            <img src="/assets/logo.svg" alt="bruh.help" className="h-7 w-auto" />
+            <span className="font-display text-2xl tracking-wide text-orange-400">bruh.help</span>
           </a>
           <div className="flex items-center gap-2">
             {state.isPaused ? <Badge variant="outline">Paused</Badge> : null}

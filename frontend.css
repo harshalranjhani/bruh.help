@@ -17,7 +17,7 @@ body {
   background: radial-gradient(circle at 12% 8%, rgba(217, 119, 87, 0.12), transparent 45%),
     radial-gradient(circle at 88% 16%, rgba(249, 115, 22, 0.08), transparent 38%),
     #090909;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .app-shell {
@@ -75,7 +75,7 @@ pre {
   background: rgba(255,255,255,0.07);
   border-radius: 3px;
   padding: 0.15em 0.35em;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85em;
   color: #fbbf24;
 }

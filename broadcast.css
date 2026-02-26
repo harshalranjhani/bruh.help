@@ -10,7 +10,7 @@ body {
 body {
   display: grid;
   place-items: center;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 #broadcast-canvas {
@@ -28,5 +28,5 @@ body {
   background: rgba(9, 9, 11, 0.9);
   padding: 8px 10px;
   color: #71717a;
-  font: 600 12px/1.1 "IBM Plex Mono", monospace;
+  font: 600 12px/1.1 "Inter", sans-serif;
 }

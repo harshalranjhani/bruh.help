@@ -239,8 +239,7 @@ function App() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <a href="/" className="inline-flex items-center gap-2">
-            <img src="/assets/logo.svg" alt="bruh.help" className="h-6 w-auto" />
-            <span className="font-display text-4xl uppercase tracking-wide text-orange-400">History</span>
+            <span className="font-display text-2xl tracking-wide text-orange-400">bruh.help</span>
           </a>
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wide text-zinc-400">
             <a href="/" className="hover:text-orange-300">
