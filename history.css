@@ -1,0 +1,140 @@
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: radial-gradient(circle at 12% 10%, rgba(217, 119, 87, 0.15), transparent 48%), #070707;
+}
+
+.history-shell {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.history-card {
+  animation: rise-in 220ms ease-out;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hide scrollbar but keep scrolling */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Markdown preview styles */
+.md-preview {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #e4e4e7;
+  word-break: break-word;
+}
+
+.md-preview h1,
+.md-preview h2,
+.md-preview h3 {
+  font-weight: 600;
+  margin: 0.6em 0 0.3em;
+  color: #f4f4f5;
+}
+
+.md-preview h1 {
+  font-size: 1.1em;
+}
+
+.md-preview h2 {
+  font-size: 1em;
+}
+
+.md-preview h3 {
+  font-size: 0.9em;
+}
+
+.md-preview p {
+  margin: 0.35em 0;
+}
+
+.md-preview ul,
+.md-preview ol {
+  margin: 0.35em 0;
+  padding-left: 1.3em;
+}
+
+.md-preview li {
+  margin: 0.1em 0;
+}
+
+.md-preview code {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 3px;
+  padding: 0.12em 0.3em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em;
+  color: #fbbf24;
+}
+
+.md-preview pre {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.6em 0.8em;
+  overflow-x: auto;
+  margin: 0.4em 0;
+}
+
+.md-preview pre code {
+  background: none;
+  padding: 0;
+  color: #d4d4d8;
+  font-size: 0.82em;
+}
+
+.md-preview blockquote {
+  border-left: 3px solid #D97757;
+  margin: 0.4em 0;
+  padding: 0.15em 0.7em;
+  color: #a1a1aa;
+}
+
+.md-preview a {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+.md-preview strong {
+  color: #f4f4f5;
+  font-weight: 600;
+}
+
+.md-preview hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0.6em 0;
+}

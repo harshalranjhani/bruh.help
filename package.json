@@ -1,0 +1,35 @@
+{
+  "name": "bruh-help",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun server.ts",
+    "start:web": "bun --hot server.ts",
+    "start:cli": "bun quipslop.tsx",
+    "start:stream": "bun ./scripts/stream-browser.ts live",
+    "start:stream:dryrun": "bun ./scripts/stream-browser.ts dryrun",
+    "check": "bunx tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.2.3",
+    "@types/react-dom": "^19.2.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@ai-sdk/groq": "^2.0.0",
+    "@ai-sdk/openai": "^2.0.0",
+    "ai": "^5.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "ink": "^6.0.1",
+    "marked": "^17.0.3",
+    "puppeteer": "^24.22.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwind-merge": "^3.3.1"
+  }
+}
