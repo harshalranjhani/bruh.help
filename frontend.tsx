@@ -39,7 +39,7 @@ const MODEL_COLORS: Record<string, string> = {
   "Llama 3.3 70B": "#a78bfa",
   "DeepSeek V3": "#22d3ee",
   "Mistral Nemo": "#34d399",
-  "Qwen 2.5 32B": "#38bdf8",
+  "Qwen3 8B": "#38bdf8",
   "Stack Overflow": "#f97316",
 };
 
@@ -49,7 +49,7 @@ const MODEL_LOGOS: Record<string, string> = {
   "Llama 3.3 70B": "/assets/logos/llama.svg",
   "DeepSeek V3": "/assets/logos/deepseek.svg",
   "Mistral Nemo": "/assets/logos/mistral.svg",
-  "Qwen 2.5 32B": "/assets/logos/qwen.svg",
+  "Qwen3 8B": "/assets/logos/qwen.svg",
   "Stack Overflow": "/assets/logos/stackoverflow.svg",
 };
 
@@ -327,7 +327,7 @@ function Arena({
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-zinc-200">Judge reasoning</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-2 md:grid-cols-2" style={{ maxHeight: "220px", overflowY: "auto" }}>
+        <CardContent className="grid gap-2 md:grid-cols-2">
           {round.votes.map((vote, idx) => (
             <div key={`${vote.voter.name}-${idx}`} className="hide-scrollbar rounded border border-zinc-800 bg-black/25 p-3">
               <div className="mb-1 flex items-center justify-between gap-2">
@@ -610,9 +610,18 @@ function App() {
     }
   }
 
-  const delaySecondsLeft = useMemo(() => {
-    if (!state?.nextRoundAt) return 0;
-    return Math.max(0, Math.ceil((state.nextRoundAt - Date.now()) / 1000));
+  const [delaySecondsLeft, setDelaySecondsLeft] = useState(0);
+
+  useEffect(() => {
+    const nextRoundAt = state?.nextRoundAt;
+    if (!nextRoundAt) {
+      setDelaySecondsLeft(0);
+      return;
+    }
+    const tick = () => setDelaySecondsLeft(Math.max(0, Math.ceil((nextRoundAt - Date.now()) / 1000)));
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
   }, [state?.nextRoundAt, state?.generation]);
 
   if (!connected || !state) {
@@ -643,14 +652,14 @@ function App() {
 
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
           <main className="min-w-0 space-y-4">
-            {delaySecondsLeft > 0 && !displayRound ? (
+            {delaySecondsLeft > 0 ? (
               <Card className="border-sky-800/40 bg-sky-950/20">
                 <CardContent className="flex items-center gap-3 p-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-sky-700/50 bg-sky-900/30">
                     <span className="text-lg font-bold text-sky-400">{delaySecondsLeft}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-sky-300">Next round in {delaySecondsLeft}s</p>
+                    <p className="text-sm font-medium text-sky-300">Next round starts soon!</p>
                     <p className="text-xs text-zinc-500">Delay between rounds to keep API costs low. Sit tight!</p>
                   </div>
                 </CardContent>

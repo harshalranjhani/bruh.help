@@ -39,10 +39,11 @@ if (!process.env.STACK_EXCHANGE_KEY) {
   console.warn("Warning: STACK_EXCHANGE_KEY missing. Stack Overflow quota is lower without it.");
 }
 
-const persistedRounds = getAllRounds();
 const initialScores = createBlankScores();
 const initialViewerScores = createBlankScores();
 const initialLanguageScores = createEmptyLanguageScores();
+
+const persistedRounds = await getAllRounds();
 bootstrapStateFromRounds(persistedRounds, {
   scores: initialScores,
   viewerScores: initialViewerScores,
@@ -317,13 +318,13 @@ function applyViewerVote(voterId: string, side: ViewerVoteSide): boolean {
   return true;
 }
 
-function getAdminSnapshot() {
+async function getAdminSnapshot() {
   return {
     isPaused: gameState.isPaused,
     isRunningRound: Boolean(gameState.active),
     done: gameState.done,
     completedInMemory: gameState.completed.length,
-    persistedRounds: countRounds(),
+    persistedRounds: await countRounds(),
     viewerCount: clients.size,
     questionDifficulty: getQuestionDifficulty(),
     roundDelayMs: gameState.roundDelayMs,
@@ -435,7 +436,7 @@ const server = Bun.serve<WsData>({
       }
 
       const isSecure = url.protocol === "https:";
-      return new Response(JSON.stringify({ ok: true, ...getAdminSnapshot() }), {
+      return new Response(JSON.stringify({ ok: true, ...await getAdminSnapshot() }), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -469,7 +470,7 @@ const server = Bun.serve<WsData>({
       if (!isAdminAuthorized(req, url)) {
         return new Response("Unauthorized", { status: 401 });
       }
-      return new Response(JSON.stringify({ ok: true, ...getAdminSnapshot() }), {
+      return new Response(JSON.stringify({ ok: true, ...await getAdminSnapshot() }), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -534,7 +535,7 @@ const server = Bun.serve<WsData>({
         return new Response("Confirmation token must be RESET", { status: 400 });
       }
 
-      clearAllRounds();
+      await clearAllRounds();
       historyCache.clear();
       gameState.completed = [];
       gameState.active = null;
@@ -550,7 +551,7 @@ const server = Bun.serve<WsData>({
       resetExternalStateAfterAdminReset();
       broadcast();
 
-      return new Response(JSON.stringify({ ok: true, ...getAdminSnapshot() }), {
+      return new Response(JSON.stringify({ ok: true, ...await getAdminSnapshot() }), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -590,7 +591,7 @@ const server = Bun.serve<WsData>({
         return new Response(action, { status: 200 });
       }
 
-      return new Response(JSON.stringify({ ok: true, action, ...getAdminSnapshot() }), {
+      return new Response(JSON.stringify({ ok: true, action, ...await getAdminSnapshot() }), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -628,7 +629,7 @@ const server = Bun.serve<WsData>({
       setQuestionDifficulty(difficulty);
       log("INFO", "admin", "Question difficulty changed", { difficulty });
 
-      return new Response(JSON.stringify({ ok: true, difficulty, ...getAdminSnapshot() }), {
+      return new Response(JSON.stringify({ ok: true, difficulty, ...await getAdminSnapshot() }), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -660,7 +661,7 @@ const server = Bun.serve<WsData>({
         gameState.roundDelayMs = ms;
         log("INFO", "admin", "Round delay changed", { delayMs: ms });
 
-        return new Response(JSON.stringify({ ok: true, ...getAdminSnapshot() }), {
+        return new Response(JSON.stringify({ ok: true, ...await getAdminSnapshot() }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",
@@ -709,7 +710,7 @@ const server = Bun.serve<WsData>({
         });
       }
 
-      const body = JSON.stringify(getRounds(page, limit, language));
+      const body = JSON.stringify(await getRounds(page, limit, language));
       setHistoryCache(cacheKey, body, now + HISTORY_CACHE_TTL_MS);
 
       return new Response(body, {

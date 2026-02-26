@@ -51,8 +51,8 @@ body {
 
 /* Markdown preview styles */
 .md-preview {
-  font-size: 0.8rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.65;
   color: #e4e4e7;
   word-break: break-word;
 }

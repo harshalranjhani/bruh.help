@@ -63,17 +63,17 @@ const MODEL_PRESETS: Record<AIProvider, ModelPreset[]> = {
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
     { id: "google/gemma-2-9b-it", name: "Gemma 2 9B" },
     { id: "meta-llama/llama-3.3-70b-instruct", name: "Llama 3.3 70B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "deepseek/deepseek-chat-v3-0324", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "deepseek/deepseek-chat", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "qwen/qwen-2.5-32b-instruct", name: "Qwen 2.5 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "qwen/qwen3-8b", name: "Qwen3 8B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
   "openai-compatible": [
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
     { id: "google/gemma-2-9b-it", name: "Gemma 2 9B" },
     { id: "meta-llama/llama-3.3-70b-instruct", name: "Llama 3.3 70B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "deepseek/deepseek-chat-v3-0324", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "deepseek/deepseek-chat", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
-    { id: "qwen/qwen-2.5-32b-instruct", name: "Qwen 2.5 32B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "qwen/qwen3-8b", name: "Qwen3 8B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
 };
 
@@ -604,7 +604,7 @@ export async function runGame(
       continue;
     }
 
-    saveRound(round);
+    await saveRound(round);
     state.completed = [...state.completed, round];
     state.active = null;
     rerender();

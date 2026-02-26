@@ -64,7 +64,8 @@ const backoffUntilByKey = new Map<string, number>();
 
 let logger: Logger = () => {};
 let queue: StackOverflowQuestion[] = [];
-let usedQuestionIds = getUsedQuestionIds();
+let usedQuestionIds: Set<number> = new Set();
+let usedIdsLoaded = false;
 let inFlightFetch: Promise<StackOverflowQuestion[]> | null = null;
 let initialized = false;
 let currentDifficulty: QuestionDifficulty = "easy";
@@ -385,18 +386,23 @@ function enqueueQuestions(questions: StackOverflowQuestion[]) {
 }
 
 async function refillQueueIfNeeded() {
+  if (!usedIdsLoaded) {
+    usedQuestionIds = await getUsedQuestionIds();
+    usedIdsLoaded = true;
+  }
+
   if (queue.length >= PREFETCH_TARGET) return;
 
   // Try cached questions first
-  const cached = getCachedStackOverflowQuestions(500);
+  const cached = await getCachedStackOverflowQuestions(500);
   enqueueQuestions(cached);
   if (queue.length >= PREFETCH_TARGET) return;
 
   if (!inFlightFetch) {
     inFlightFetch = fetchQuestions()
-      .then((fresh) => {
+      .then(async (fresh) => {
         if (fresh.length > 0) {
-          upsertStackOverflowQuestions(fresh);
+          await upsertStackOverflowQuestions(fresh);
           enqueueQuestions(fresh);
         }
 
@@ -485,9 +491,10 @@ export async function nextStackOverflowQuestion(): Promise<StackOverflowQuestion
   throw new Error("No Stack Overflow questions available");
 }
 
-export function resetStackOverflowPool() {
+export async function resetStackOverflowPool() {
   queue = [];
-  usedQuestionIds = getUsedQuestionIds();
+  usedQuestionIds = await getUsedQuestionIds();
+  usedIdsLoaded = true;
   inFlightFetch = null;
   initialized = false;
   currentPage = 1;

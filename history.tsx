@@ -90,12 +90,12 @@ function RoundCard({ round }: { round: RoundState }) {
             href={round.question.link}
             target="_blank"
             rel="noreferrer"
-            className="font-mono text-[11px] uppercase tracking-wide text-zinc-400 hover:text-orange-300"
+            className="inline-flex items-center gap-1 rounded border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 transition-colors"
           >
-            stack overflow thread
+            View on Stack Overflow ↗
           </a>
         </div>
-        <CardTitle className="font-display text-5xl uppercase leading-none text-zinc-100">
+        <CardTitle className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl">
           {decodeHtmlText(round.question.title)}
         </CardTitle>
         <p className="text-sm text-zinc-300">{decodeHtmlText(round.question.bodySnippet)}</p>
