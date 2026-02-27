@@ -201,7 +201,7 @@ function App() {
       <main className="admin-shell flex min-h-screen items-center justify-center px-4">
         <Card className="w-full max-w-md border-zinc-800 bg-zinc-950/90">
           <CardHeader>
-            <a href="/" className="inline-flex items-center gap-2">
+            <a href="/" className="inline-flex items-center gap-2" data-umami-event="Admin Logo Click (Locked)">
               <span className="font-display text-2xl tracking-wide text-orange-400">bruh.help</span>
             </a>
             <CardTitle className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500">secure panel</CardTitle>
@@ -219,7 +219,7 @@ function App() {
                   autoFocus
                 />
               </label>
-              <Button type="submit" className="w-full" disabled={busy || !passcode.trim()}>
+              <Button type="submit" className="w-full" disabled={busy || !passcode.trim()} data-umami-event="Admin Login Attempt">
                 {pending === "login" ? "checking..." : "unlock"}
               </Button>
             </form>
@@ -242,14 +242,14 @@ function App() {
     <main className="admin-shell min-h-screen px-4 py-6 md:px-8">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <a href="/" className="inline-flex items-center gap-2">
+          <a href="/" className="inline-flex items-center gap-2" data-umami-event="Admin Logo Click">
              <span className="font-display text-2xl tracking-wide text-orange-400">bruh.help</span>
           </a>
           <div className="flex items-center gap-2">
-            <a href="/history" className="font-mono text-xs uppercase tracking-wide text-zinc-400 hover:text-orange-300">
+            <a href="/history" className="font-mono text-xs uppercase tracking-wide text-zinc-400 hover:text-orange-300" data-umami-event="Admin History Link Click">
               history
             </a>
-            <Button variant="outline" size="sm" onClick={onLogout} disabled={busy}>
+            <Button variant="outline" size="sm" onClick={onLogout} disabled={busy} data-umami-event="Admin Logout">
               logout
             </Button>
           </div>
@@ -277,6 +277,7 @@ function App() {
                 className="w-full"
                 disabled={busy || Boolean(snapshot?.isPaused)}
                 onClick={() => runControl("/api/admin/pause", "pause")}
+                data-umami-event="Admin Pause"
               >
                 {pending === "pause" ? "pausing..." : "pause"}
               </Button>
@@ -285,13 +286,14 @@ function App() {
                 className="w-full"
                 disabled={busy || !snapshot?.isPaused}
                 onClick={() => runControl("/api/admin/resume", "resume")}
+                data-umami-event="Admin Resume"
               >
                 {pending === "resume" ? "resuming..." : "resume"}
               </Button>
-              <Button variant="outline" className="w-full" disabled={busy} onClick={onExport}>
+              <Button variant="outline" className="w-full" disabled={busy} onClick={onExport} data-umami-event="Admin Export Data">
                 {pending === "export" ? "exporting..." : "export"}
               </Button>
-              <Button variant="outline" className="w-full border-red-700 text-red-300" disabled={busy} onClick={() => setIsResetOpen(true)}>
+              <Button variant="outline" className="w-full border-red-700 text-red-300" disabled={busy} onClick={() => setIsResetOpen(true)} data-umami-event="Admin Open Reset Dialog">
                 reset
               </Button>
             </div>
@@ -311,6 +313,7 @@ function App() {
                   variant={snapshot?.questionDifficulty === level ? "default" : "outline"}
                   className={`flex-1 capitalize ${snapshot?.questionDifficulty === level ? "" : ""}`}
                   disabled={busy}
+                  data-umami-event={`Admin Set Difficulty - ${level}`}
                   onClick={async () => {
                     setError(null);
                     setPending("difficulty");
@@ -359,6 +362,7 @@ function App() {
                   variant={snapshot?.roundDelayMs === ms ? "default" : "outline"}
                   className="flex-1"
                   disabled={busy}
+                  data-umami-event={`Admin Set Delay - ${label}`}
                   onClick={async () => {
                     setError(null);
                     setPending("delay");

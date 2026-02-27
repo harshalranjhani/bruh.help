@@ -92,6 +92,7 @@ function RoundCard({ round }: { round: RoundState }) {
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 rounded border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 transition-colors"
+            data-umami-event="View on Stack Overflow Click - History"
           >
             View on Stack Overflow ↗
           </a>
@@ -213,6 +214,7 @@ function LanguageDropdown({
             ? "border-orange-500 bg-zinc-800 text-zinc-100"
             : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
         }`}
+        data-umami-event="Toggle Language Dropdown"
       >
         <span>{label}</span>
         <svg
@@ -238,6 +240,7 @@ function LanguageDropdown({
                   ? "bg-orange-500/15 text-orange-400"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
               }`}
+              data-umami-event={`Select Language Filter - ${option}`}
             >
               {option === "all" ? "All languages" : option}
               {option === value && (
@@ -335,11 +338,11 @@ function App() {
     <main className="history-shell min-h-screen px-4 py-6 md:px-8">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <a href="/" className="inline-flex items-center gap-2">
+          <a href="/" className="inline-flex items-center gap-2" data-umami-event="Logo Click - History">
             <span className="font-display text-2xl tracking-wide text-orange-400">bruh.help</span>
           </a>
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wide text-zinc-400">
-            <a href="/" className="hover:text-orange-300">
+            <a href="/" className="hover:text-orange-300" data-umami-event="Live Arena Link Click - History">
               live arena
             </a>
           </div>
@@ -375,13 +378,13 @@ function App() {
         {data ? (
           <Card className="border-zinc-800 bg-zinc-950/85">
             <CardContent className="flex items-center justify-center gap-3 p-4">
-              <Button variant="outline" onClick={() => setPage((value) => value - 1)} disabled={!hasPrev}>
+              <Button variant="outline" onClick={() => setPage((value) => value - 1)} disabled={!hasPrev} data-umami-event="Pagination Prev">
                 prev
               </Button>
               <span className="font-mono text-xs uppercase tracking-wide text-zinc-400">
                 page {page} / {data.totalPages}
               </span>
-              <Button variant="outline" onClick={() => setPage((value) => value + 1)} disabled={!hasNext}>
+              <Button variant="outline" onClick={() => setPage((value) => value + 1)} disabled={!hasNext} data-umami-event="Pagination Next">
                 next
               </Button>
             </CardContent>
