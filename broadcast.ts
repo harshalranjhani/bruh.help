@@ -1,4 +1,5 @@
 import type { LanguageScoreboard, Model, RoundState } from "./types.ts";
+import { MODEL_LOGO_CDN_HOSTNAME } from "./utils.ts";
 
 type ClientGameState = {
   lastCompleted: RoundState | null;
@@ -53,11 +54,14 @@ function colorFor(name: string) {
 }
 
 function logoFor(name: string): string | null {
-  if (name.includes("Llama")) return "/assets/logos/llama.svg";
-  if (name.includes("Gemma")) return "/assets/logos/gemma.svg";
-  if (name.includes("Qwen")) return "/assets/logos/qwen.svg";
-  if (name.includes("Stack Overflow")) return "/assets/logos/stackoverflow.svg";
-  return null;
+  let filename: string | null = null;
+  if (name.includes("Llama")) filename = "meta.png";
+  else if (name.includes("Gemma")) filename = "google-gemma.png";
+  else if (name.includes("Qwen")) filename = "qwen.png";
+  else if (name.includes("DeepSeek")) filename = "deepseek.png";
+  else if (name.includes("Mistral")) filename = "mistral-ai.png";
+  if (!filename) return null;
+  return `${MODEL_LOGO_CDN_HOSTNAME}/images/logos/${filename}`;
 }
 
 const logoCache: Record<string, HTMLImageElement> = {};
@@ -67,6 +71,7 @@ function drawLogo(name: string, x: number, y: number, size: number): boolean {
 
   if (!logoCache[url]) {
     const img = new Image();
+    img.crossOrigin = "anonymous";
     img.src = url;
     logoCache[url] = img;
   }

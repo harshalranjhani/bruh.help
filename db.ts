@@ -57,16 +57,31 @@ function parseRound(data: unknown): RoundState {
 
 export async function saveRound(round: RoundState) {
   await initDb();
-  await pb.collection("rounds").create({
+  const payload = {
     num: round.num,
     language: round.language,
     question_id: round.question.questionId,
-    contestant_a: round.contestants[0].name,
-    contestant_b: round.contestants[1].name,
+    contestant_a: round.contestants[0]?.name ?? "",
+    contestant_b: round.contestants[1]?.name ?? "",
     winner: round.winningModel ?? "",
     viewer_winner: round.winningViewerModel ?? "",
     data: round,
-  });
+  };
+  console.log("[PocketBase] saveRound payload:", JSON.stringify({
+    num: payload.num,
+    contestant_a: payload.contestant_a,
+    contestant_b: payload.contestant_b,
+    winner: payload.winner,
+  }));
+  const created = await pb.collection("rounds").create(payload);
+  console.log("[PocketBase] created record fields:", JSON.stringify({
+    id: created.id,
+    contestant_a: created["contestant_a"],
+    contestant_b: created["contestant_b"],
+    winner: created["winner"],
+    // List all keys PocketBase stored
+    allKeys: Object.keys(created),
+  }));
 }
 
 export async function getRounds(page = 1, limit = 10, language?: string) {

@@ -1,6 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+/** CDN hostname for model logos - change this to switch CDN provider */
+export const MODEL_LOGO_CDN_HOSTNAME = "https://cdn.bruh.help";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

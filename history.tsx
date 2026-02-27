@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { marked } from "marked";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "./components/ui.tsx";
 import type { RoundState, VoteInfo } from "./types.ts";
+import { MODEL_LOGO_CDN_HOSTNAME } from "./utils.ts";
 import "./history.css";
 
 type HistoryResponse = {
@@ -33,14 +34,14 @@ function MarkdownPreview({ content }: { content: string }) {
 }
 
 function logoFor(name: string) {
-  if (name.includes("Llama")) return "/assets/logos/llama.svg";
-  if (name.includes("Gemma")) return "/assets/logos/gemma.svg";
-  if (name.includes("Qwen")) return "/assets/logos/qwen.svg";
-  if (name.includes("DeepSeek")) return "/assets/logos/deepseek.svg";
-  if (name.includes("Mistral")) return "/assets/logos/mistral.svg";
-  if (name.includes("Phi")) return "/assets/logos/phi.svg";
-  if (name.includes("Stack Overflow")) return "/assets/logos/stackoverflow.svg";
-  return null;
+  let filename: string | null = null;
+  if (name.includes("Llama")) filename = "meta.png";
+  else if (name.includes("Gemma")) filename = "google-gemma.png";
+  else if (name.includes("Qwen")) filename = "qwen.png";
+  else if (name.includes("DeepSeek")) filename = "deepseek.png";
+  else if (name.includes("Mistral")) filename = "mistral-ai.png";
+  if (!filename) return null;
+  return `${MODEL_LOGO_CDN_HOSTNAME}/images/logos/${filename}`;
 }
 
 function colorFor(name: string) {

@@ -39,16 +39,13 @@ if (!process.env.STACK_EXCHANGE_KEY) {
   console.warn("Warning: STACK_EXCHANGE_KEY missing. Stack Overflow quota is lower without it.");
 }
 
-const initialScores = createBlankScores();
-const initialViewerScores = createBlankScores();
-const initialLanguageScores = createEmptyLanguageScores();
-
 const persistedRounds = await getAllRounds();
-bootstrapStateFromRounds(persistedRounds, {
-  scores: initialScores,
-  viewerScores: initialViewerScores,
-  languageScores: initialLanguageScores,
-});
+const bootstrappedState = {
+  scores: createBlankScores(),
+  viewerScores: createBlankScores(),
+  languageScores: createEmptyLanguageScores(),
+};
+bootstrapStateFromRounds(persistedRounds, bootstrappedState);
 
 const initialCompleted: RoundState[] = persistedRounds.length
   ? [persistedRounds[persistedRounds.length - 1]!]
@@ -57,11 +54,11 @@ const initialCompleted: RoundState[] = persistedRounds.length
 const gameState: GameState = {
   completed: initialCompleted,
   active: null,
-  scores: initialScores,
-  viewerScores: initialViewerScores,
+  scores: bootstrappedState.scores,
+  viewerScores: bootstrappedState.viewerScores,
   judgeScores: createBlankJudgeScores(),
   judgeRounds: createBlankJudgeScores(),
-  languageScores: initialLanguageScores,
+  languageScores: bootstrappedState.languageScores,
   done: false,
   isPaused: false,
   generation: 0,

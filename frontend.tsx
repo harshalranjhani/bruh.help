@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { marked } from "marked";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "./components/ui.tsx";
 import type { LanguageScoreboard, Model, RoundState, VoteInfo } from "./types.ts";
+import { MODEL_LOGO_CDN_HOSTNAME } from "./utils.ts";
 import "./frontend.css";
 
 type ClientGameState = {
@@ -43,14 +44,15 @@ const MODEL_COLORS: Record<string, string> = {
   "Stack Overflow": "#f97316",
 };
 
-const MODEL_LOGOS: Record<string, string> = {
-  "Llama 3.1 8B": "/assets/logos/llama.svg",
-  "Gemma 2 9B": "/assets/logos/gemma.svg",
-  "Llama 3.3 70B": "/assets/logos/llama.svg",
-  "DeepSeek V3": "/assets/logos/deepseek.svg",
-  "Mistral Nemo": "/assets/logos/mistral.svg",
-  "Qwen3 8B": "/assets/logos/qwen.svg",
-  "Stack Overflow": "/assets/logos/stackoverflow.svg",
+/** Model logo filenames on CDN - matches https://cdn.bruh.help/images/logos/<name>.png */
+const MODEL_LOGO_FILENAMES: Record<string, string> = {
+  "Llama 3.1 8B": "meta.png",
+  "Gemma 2 9B": "google-gemini.png",
+  "Llama 3.3 70B": "meta.png",
+  "DeepSeek V3": "deepseek.png",
+  "Mistral Nemo": "mistral-ai.png",
+  "Qwen3 8B": "qwen.png",
+  // Stack Overflow not available on CDN yet
 };
 
 function colorFor(name: string) {
@@ -58,7 +60,9 @@ function colorFor(name: string) {
 }
 
 function logoFor(name: string) {
-  return MODEL_LOGOS[name] ?? null;
+  const filename = MODEL_LOGO_FILENAMES[name];
+  if (!filename) return null;
+  return `${MODEL_LOGO_CDN_HOSTNAME}/images/logos/${filename}`;
 }
 
 function decodeHtmlText(text: string): string {
@@ -370,7 +374,7 @@ function AnswererLeaderboard({
       <CardContent className="space-y-2">
         {entries.map((entry, index) => {
           const barPct = maxWins > 0 ? Math.max(3, Math.round((entry.wins / maxWins) * 100)) : 0;
-          const logo = MODEL_LOGOS[entry.name];
+          const logo = logoFor(entry.name);
 
           return (
             <div key={entry.name} className="group">
@@ -417,7 +421,7 @@ function JudgeLeaderboard({
       <CardContent className="space-y-2">
         {entries.map((entry, index) => {
           const barPct = maxRounds > 0 ? Math.max(3, Math.round((entry.judgeRounds / maxRounds) * 100)) : 0;
-          const logo = MODEL_LOGOS[entry.name];
+          const logo = logoFor(entry.name);
 
           return (
             <div key={entry.name} className="group">
