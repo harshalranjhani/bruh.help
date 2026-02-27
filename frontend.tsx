@@ -370,7 +370,7 @@ function AnswererLeaderboard({
     <Card className="border-zinc-800 bg-zinc-950/80">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-zinc-500">AI Judges</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-zinc-500">{title}</span>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -417,7 +417,7 @@ function JudgeLeaderboard({
     <Card className="border-zinc-800 bg-zinc-950/80">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-zinc-500">Viewers</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-zinc-500">{title}</span>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -514,8 +514,8 @@ function SidePanel({
         </CardContent>
       </Card>
 
-      <AnswererLeaderboard title="Answerer standings" entries={answererEntries} />
-      <JudgeLeaderboard title="Judge standings" entries={judgeEntries} />
+      <AnswererLeaderboard title="Top Models" entries={answererEntries} />
+      <JudgeLeaderboard title="Top Judges" entries={judgeEntries} />
     </aside>
   );
 }
