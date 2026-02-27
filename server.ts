@@ -8,6 +8,7 @@ import {
   clearAllRounds,
   countRounds,
   getAllRounds,
+  getAvailableLanguages,
   getRounds,
 } from "./db.ts";
 import {
@@ -668,6 +669,20 @@ const server = Bun.serve<WsData>({
       } catch {
         return new Response("Invalid JSON body", { status: 400 });
       }
+    }
+
+    if (url.pathname === "/api/history/languages") {
+      if (isRateLimited(`history:${ip}`, HISTORY_LIMIT_PER_MIN, WINDOW_MS)) {
+        return new Response("Too Many Requests", { status: 429 });
+      }
+      const languages = await getAvailableLanguages();
+      return new Response(JSON.stringify({ languages }), {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=30, stale-while-revalidate=60",
+          "X-Content-Type-Options": "nosniff",
+        },
+      });
     }
 
     if (url.pathname === "/api/history") {

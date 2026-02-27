@@ -411,7 +411,7 @@ function JudgeLeaderboard({
   title: string;
   entries: Array<{ name: string; judgeWins: number; judgeRounds: number }>;
 }) {
-  const maxRounds = Math.max(1, ...entries.map((e) => e.judgeRounds));
+  const maxWins = Math.max(1, ...entries.map((e) => e.judgeWins));
 
   return (
     <Card className="border-zinc-800 bg-zinc-950/80">
@@ -422,7 +422,7 @@ function JudgeLeaderboard({
       </CardHeader>
       <CardContent className="space-y-2">
         {entries.map((entry, index) => {
-          const barPct = maxRounds > 0 ? Math.max(3, Math.round((entry.judgeRounds / maxRounds) * 100)) : 0;
+          const barPct = entry.judgeWins > 0 ? Math.max(3, Math.round((entry.judgeWins / maxWins) * 100)) : 0;
           const logo = logoFor(entry.name);
 
           return (

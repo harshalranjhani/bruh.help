@@ -396,7 +396,7 @@ export async function callVote(
   }
 
   const fallbackVote = text.toUpperCase().includes("\"B\"") || /^B\b/.test(text.trim()) ? "B" : "A";
-  const fallbackReason = reasonRaw || `Judge picked ${fallbackVote} for better technical accuracy.`;
+  const fallbackReason = reasonRaw || "Picked for better technical accuracy.";
 
   log("WARN", `judge:${judge.name}`, "Judge output required fallback parsing", {
     modelIdUsed,
@@ -550,7 +550,17 @@ export async function runGame(
 
             const voteForA = showAFirst ? judged.vote === "A" : judged.vote === "B";
             voteInfo.votedFor = voteForA ? contA : contB;
-            voteInfo.reasoning = judged.reason;
+
+            // Remap A/B references in reasoning to match actual displayed sides
+            // when answers were shown in swapped order
+            let reason = judged.reason;
+            if (!showAFirst) {
+              reason = reason
+                .replace(/\bAnswer A\b/gi, "Answer §B§")
+                .replace(/\bAnswer B\b/gi, "Answer A")
+                .replace(/§B§/g, "B");
+            }
+            voteInfo.reasoning = reason;
           } catch {
             voteInfo.error = true;
           }

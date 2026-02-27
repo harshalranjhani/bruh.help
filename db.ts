@@ -130,6 +130,24 @@ export async function clearAllRounds() {
   }
 }
 
+export async function getAvailableLanguages(): Promise<string[]> {
+  await initDb();
+  const ORDER = ["javascript", "typescript", "python", "go", "rust", "java", "other"];
+  const available: string[] = [];
+  for (const lang of ORDER) {
+    try {
+      const result = await pb.collection("rounds").getList(1, 1, {
+        filter: `language = "${lang}"`,
+        requestKey: null,
+      });
+      if (result.totalItems > 0) available.push(lang);
+    } catch {
+      // skip if query fails for this language
+    }
+  }
+  return available;
+}
+
 // ── Stack Overflow questions ──
 
 export async function upsertStackOverflowQuestions(questions: StackOverflowQuestion[]) {

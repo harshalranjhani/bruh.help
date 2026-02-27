@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { marked } from "marked";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "./components/ui.tsx";
@@ -13,8 +13,6 @@ type HistoryResponse = {
   limit: number;
   totalPages: number;
 };
-
-const LANGUAGE_OPTIONS = ["all", "javascript", "typescript", "python", "go", "rust", "java", "other"];
 
 marked.setOptions({ breaks: true, gfm: true });
 
@@ -181,12 +179,108 @@ function RoundCard({ round }: { round: RoundState }) {
   );
 }
 
+function LanguageDropdown({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  onChange: (val: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const label = value === "all" ? "All languages" : value;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.15em] transition-colors ${
+          open
+            ? "border-orange-500 bg-zinc-800 text-zinc-100"
+            : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+        }`}
+      >
+        <span>{label}</span>
+        <svg
+          width="10"
+          height="6"
+          viewBox="0 0 10 6"
+          fill="none"
+          className={`shrink-0 transition-transform duration-150 ${open ? "rotate-180" : ""}`}
+        >
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1 min-w-[10rem] overflow-hidden rounded-md border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/50">
+          {options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => { onChange(option); setOpen(false); }}
+              className={`flex w-full items-center px-3 py-1.5 font-mono text-xs uppercase tracking-[0.15em] transition-colors ${
+                option === value
+                  ? "bg-orange-500/15 text-orange-400"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+              }`}
+            >
+              {option === "all" ? "All languages" : option}
+              {option === value && (
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="ml-auto shrink-0">
+                  <path d="M1 4l3 3 5-6" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function App() {
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [language, setLanguage] = useState("all");
+  const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
+
+  // Fetch available languages once on mount
+  useEffect(() => {
+    fetch("/api/history/languages", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((payload: { languages: string[] }) => {
+        setAvailableLanguages(payload.languages ?? []);
+      })
+      .catch(() => {
+        // Silently fall back to empty — dropdown will just show "All languages"
+      });
+  }, []);
+
+  // Derived: dropdown options ("other" excluded when viewing "all")
+  const dropdownOptions = useMemo(() => {
+    const visibleLanguages =
+      language === "all"
+        ? availableLanguages.filter((l) => l !== "other")
+        : availableLanguages;
+    return ["all", ...visibleLanguages];
+  }, [availableLanguages, language]);
 
   useEffect(() => {
     let cancelled = false;
@@ -253,20 +347,13 @@ function App() {
 
         <Card className="border-zinc-800 bg-zinc-950/85">
           <CardContent className="space-y-4 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <h1 className="font-mono text-xs uppercase tracking-[0.22em] text-zinc-400">round archive · {heading}</h1>
-              <div className="flex flex-wrap gap-2">
-                {LANGUAGE_OPTIONS.map((option) => (
-                  <Button
-                    key={option}
-                    size="sm"
-                    variant={option === language ? "default" : "outline"}
-                    onClick={() => setLanguage(option)}
-                  >
-                    {option}
-                  </Button>
-                ))}
-              </div>
+              <LanguageDropdown
+                value={language}
+                options={dropdownOptions}
+                onChange={setLanguage}
+              />
             </div>
 
             {loading ? <p className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">loading rounds...</p> : null}
