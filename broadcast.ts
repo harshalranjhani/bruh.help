@@ -35,6 +35,7 @@ const COLORS: Record<string, string> = {
   "Gemma 2 9B": "#D97757",
   "Qwen 32B Judge": "#38bdf8",
   "Llama 3.3 70B Judge": "#a78bfa",
+  "Phi-4": "#e879f9",
   "Stack Overflow": "#f97316",
 };
 
@@ -60,6 +61,7 @@ function logoFor(name: string): string | null {
   else if (name.includes("Qwen")) filename = "qwen.png";
   else if (name.includes("DeepSeek")) filename = "deepseek.png";
   else if (name.includes("Mistral")) filename = "mistral-ai.png";
+  else if (name.includes("Phi")) filename = "microsoft.png";
   if (!filename) return null;
   return `${MODEL_LOGO_CDN_HOSTNAME}/images/logos/${filename}`;
 }

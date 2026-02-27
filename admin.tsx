@@ -202,8 +202,7 @@ function App() {
         <Card className="w-full max-w-md border-zinc-800 bg-zinc-950/90">
           <CardHeader>
             <a href="/" className="inline-flex items-center gap-2">
-              <img src="/assets/logo.svg" alt="bruh.help" className="h-6 w-auto" />
-              <span className="font-display text-4xl uppercase tracking-wide text-orange-400">Admin</span>
+
             </a>
             <CardTitle className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500">secure panel</CardTitle>
           </CardHeader>

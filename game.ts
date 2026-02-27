@@ -58,6 +58,7 @@ const MODEL_PRESETS: Record<AIProvider, ModelPreset[]> = {
     { id: "mixtral-8x7b-32768", name: "Mixtral 8x7B" },
     { id: "llama-3.1-8b-instant", name: "Llama 3.1 8B v2" },
     { id: "gemma2-9b-it", name: "Gemma 2 9B v2" },
+    { id: "gemma2-9b-it", name: "Phi-4" },
   ],
   openrouter: [
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
@@ -66,6 +67,7 @@ const MODEL_PRESETS: Record<AIProvider, ModelPreset[]> = {
     { id: "deepseek/deepseek-chat", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "qwen/qwen3-8b", name: "Qwen3 8B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "microsoft/phi-4", name: "Phi-4", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
   "openai-compatible": [
     { id: "meta-llama/llama-3.1-8b-instruct", name: "Llama 3.1 8B" },
@@ -74,12 +76,13 @@ const MODEL_PRESETS: Record<AIProvider, ModelPreset[]> = {
     { id: "deepseek/deepseek-chat", name: "DeepSeek V3", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "mistralai/mistral-nemo", name: "Mistral Nemo", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
     { id: "qwen/qwen3-8b", name: "Qwen3 8B", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
+    { id: "microsoft/phi-4", name: "Phi-4", fallbackIds: ["meta-llama/llama-3.1-8b-instruct"] },
   ],
 };
 
 const activeModels = MODEL_PRESETS[ACTIVE_AI_PROVIDER];
 
-/** All 6 models. Each round, 2 are randomly picked as contestants and 4 as judges. */
+/** All 7 models. Each round, 2 are randomly picked as contestants and 5 as judges. */
 export const ALL_MODELS: Model[] = activeModels.map((preset) => ({
   id: preset.id,
   name: preset.name,

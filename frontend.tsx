@@ -41,6 +41,7 @@ const MODEL_COLORS: Record<string, string> = {
   "DeepSeek V3": "#22d3ee",
   "Mistral Nemo": "#34d399",
   "Qwen3 8B": "#38bdf8",
+  "Phi-4": "#e879f9",
   "Stack Overflow": "#f97316",
 };
 
@@ -52,6 +53,7 @@ const MODEL_LOGO_FILENAMES: Record<string, string> = {
   "DeepSeek V3": "deepseek.png",
   "Mistral Nemo": "mistral-ai.png",
   "Qwen3 8B": "qwen.png",
+  "Phi-4": "microsoft.png",
   // Stack Overflow not available on CDN yet
 };
 

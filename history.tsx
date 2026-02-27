@@ -40,6 +40,7 @@ function logoFor(name: string) {
   else if (name.includes("Qwen")) filename = "qwen.png";
   else if (name.includes("DeepSeek")) filename = "deepseek.png";
   else if (name.includes("Mistral")) filename = "mistral-ai.png";
+  else if (name.includes("Phi")) filename = "microsoft.png";
   if (!filename) return null;
   return `${MODEL_LOGO_CDN_HOSTNAME}/images/logos/${filename}`;
 }
@@ -48,6 +49,7 @@ function colorFor(name: string) {
   if (name.includes("Llama")) return "#f59e0b";
   if (name.includes("Gemma")) return "#D97757";
   if (name.includes("Qwen")) return "#38bdf8";
+  if (name.includes("Phi")) return "#e879f9";
   return "#a1a1aa";
 }
 
