@@ -278,6 +278,7 @@ function App() {
                 disabled={busy || Boolean(snapshot?.isPaused)}
                 onClick={() => runControl("/api/admin/pause", "pause")}
                 data-umami-event="Admin Pause"
+                data-umami-event-system-state={snapshot?.isPaused ? 'paused' : 'live'}
               >
                 {pending === "pause" ? "pausing..." : "pause"}
               </Button>
@@ -287,6 +288,7 @@ function App() {
                 disabled={busy || !snapshot?.isPaused}
                 onClick={() => runControl("/api/admin/resume", "resume")}
                 data-umami-event="Admin Resume"
+                data-umami-event-system-state={snapshot?.isPaused ? 'paused' : 'live'}
               >
                 {pending === "resume" ? "resuming..." : "resume"}
               </Button>
@@ -313,7 +315,8 @@ function App() {
                   variant={snapshot?.questionDifficulty === level ? "default" : "outline"}
                   className={`flex-1 capitalize ${snapshot?.questionDifficulty === level ? "" : ""}`}
                   disabled={busy}
-                  data-umami-event={`Admin Set Difficulty - ${level}`}
+                  data-umami-event="Admin Set Difficulty"
+                  data-umami-event-difficulty={level}
                   onClick={async () => {
                     setError(null);
                     setPending("difficulty");
@@ -362,7 +365,8 @@ function App() {
                   variant={snapshot?.roundDelayMs === ms ? "default" : "outline"}
                   className="flex-1"
                   disabled={busy}
-                  data-umami-event={`Admin Set Delay - ${label}`}
+                  data-umami-event="Admin Set Delay"
+                  data-umami-event-delay-ms={ms}
                   onClick={async () => {
                     setError(null);
                     setPending("delay");

@@ -92,7 +92,11 @@ function RoundCard({ round }: { round: RoundState }) {
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 rounded border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 transition-colors"
-            data-umami-event="View on Stack Overflow Click - History"
+            data-umami-event="View on Stack Overflow Click"
+            data-umami-event-source="History"
+            data-umami-event-url={round.question.link}
+            data-umami-event-round={round.num}
+            data-umami-event-language={round.language}
           >
             View on Stack Overflow ↗
           </a>
@@ -215,6 +219,7 @@ function LanguageDropdown({
             : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
         }`}
         data-umami-event="Toggle Language Dropdown"
+        data-umami-event-state={open ? "close" : "open"}
       >
         <span>{label}</span>
         <svg
@@ -240,7 +245,8 @@ function LanguageDropdown({
                   ? "bg-orange-500/15 text-orange-400"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
               }`}
-              data-umami-event={`Select Language Filter - ${option}`}
+              data-umami-event="Select Language Filter"
+              data-umami-event-language={option}
             >
               {option === "all" ? "All languages" : option}
               {option === value && (
@@ -378,13 +384,27 @@ function App() {
         {data ? (
           <Card className="border-zinc-800 bg-zinc-950/85">
             <CardContent className="flex items-center justify-center gap-3 p-4">
-              <Button variant="outline" onClick={() => setPage((value) => value - 1)} disabled={!hasPrev} data-umami-event="Pagination Prev">
+              <Button
+                variant="outline"
+                onClick={() => setPage((value) => value - 1)}
+                disabled={!hasPrev}
+                data-umami-event="Pagination Prev"
+                data-umami-event-page={page - 1}
+                data-umami-event-language={language}
+              >
                 prev
               </Button>
               <span className="font-mono text-xs uppercase tracking-wide text-zinc-400">
                 page {page} / {data.totalPages}
               </span>
-              <Button variant="outline" onClick={() => setPage((value) => value + 1)} disabled={!hasNext} data-umami-event="Pagination Next">
+              <Button
+                variant="outline"
+                onClick={() => setPage((value) => value + 1)}
+                disabled={!hasNext}
+                data-umami-event="Pagination Next"
+                data-umami-event-page={page + 1}
+                data-umami-event-language={language}
+              >
                 next
               </Button>
             </CardContent>

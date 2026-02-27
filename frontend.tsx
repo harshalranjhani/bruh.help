@@ -241,7 +241,15 @@ function ContestantCard({
             </div>
 
             {canVote ? (
-              <Button variant="outline" size="sm" onClick={() => onVote(side)} data-umami-event={`Vote for ${task.model.name}`}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onVote(side)}
+                data-umami-event="Vote"
+                data-umami-event-model={task.model.name}
+                data-umami-event-round={round.num}
+                data-umami-event-language={round.language}
+              >
                 Vote for {task.model.name}
               </Button>
             ) : null}
@@ -294,13 +302,31 @@ function Arena({
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-2">
             <ModelTag model={round.prompter} small />
-            <a href={round.question.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 transition-colors" data-umami-event="View on Stack Overflow Click">
+            <a
+              href={round.question.link}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 rounded border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 transition-colors"
+              data-umami-event="View on Stack Overflow Click"
+              data-umami-event-url={round.question.link}
+              data-umami-event-round={round.num}
+              data-umami-event-language={round.language}
+            >
               View on Stack Overflow ↗
             </a>
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          <a href={round.question.link} target="_blank" rel="noreferrer" className="block hover:opacity-80 transition-opacity" data-umami-event="Question Title Click">
+          <a
+            href={round.question.link}
+            target="_blank"
+            rel="noreferrer"
+            className="block hover:opacity-80 transition-opacity"
+            data-umami-event="Question Title Click"
+            data-umami-event-url={round.question.link}
+            data-umami-event-round={round.num}
+            data-umami-event-language={round.language}
+          >
             <h1 className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl break-words">
               {decodeHtmlText(round.question.title)}
             </h1>
@@ -507,7 +533,12 @@ function SidePanel({
             <span className="text-sm text-zinc-400">Engine</span>
             <Badge variant="outline">{state.isPaused ? "Paused" : "Running"}</Badge>
           </div>
-          <a className="flex items-center justify-between rounded-md border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white" href="/history" data-umami-event="Match history link Click">
+          <a
+            className="flex items-center justify-between rounded-md border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+            href="/history"
+            data-umami-event="Match history link Click"
+            data-umami-event-source="SidePanel"
+          >
             <span>Match history</span>
             <span className="text-zinc-500">→</span>
           </a>
