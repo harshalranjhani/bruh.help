@@ -96,18 +96,18 @@ function RoundCard({ round }: { round: RoundState }) {
             View on Stack Overflow ↗
           </a>
         </div>
-        <CardTitle className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl">
+        <CardTitle className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl break-words">
           {decodeHtmlText(round.question.title)}
         </CardTitle>
-        <p className="text-sm text-zinc-300">{decodeHtmlText(round.question.bodySnippet)}</p>
+        <p className="text-sm text-zinc-300 break-words">{decodeHtmlText(round.question.bodySnippet)}</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3 md:grid-cols-2">
           <Card
-            className={`border ${winnerA ? "border-orange-300/60 bg-orange-950/20" : "border-zinc-800 bg-black/40"}`}
+            className={`min-w-0 w-full border ${winnerA ? "border-orange-300/60 bg-orange-950/20" : "border-zinc-800 bg-black/40"}`}
           >
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2" style={{ color: colorFor(a.name) }}>
                   {logoFor(a.name) ? <img src={logoFor(a.name)!} alt="" className="h-4 w-4" /> : null}
                   <span className="font-medium">{a.name}</span>
@@ -116,7 +116,7 @@ function RoundCard({ round }: { round: RoundState }) {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="hide-scrollbar overflow-y-auto" style={{ maxHeight: "250px" }}>
+              <div className="w-full min-w-0 hide-scrollbar overflow-y-auto overflow-x-hidden" style={{ maxHeight: "250px" }}>
                 <MarkdownPreview content={round.answerTasks[0].result ?? ""} />
               </div>
               <div className="space-y-1">
@@ -133,10 +133,10 @@ function RoundCard({ round }: { round: RoundState }) {
           </Card>
 
           <Card
-            className={`border ${winnerB ? "border-orange-300/60 bg-orange-950/20" : "border-zinc-800 bg-black/40"}`}
+            className={`min-w-0 w-full border ${winnerB ? "border-orange-300/60 bg-orange-950/20" : "border-zinc-800 bg-black/40"}`}
           >
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2" style={{ color: colorFor(b.name) }}>
                   {logoFor(b.name) ? <img src={logoFor(b.name)!} alt="" className="h-4 w-4" /> : null}
                   <span className="font-medium">{b.name}</span>
@@ -145,7 +145,7 @@ function RoundCard({ round }: { round: RoundState }) {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="hide-scrollbar overflow-y-auto" style={{ maxHeight: "250px" }}>
+              <div className="w-full min-w-0 hide-scrollbar overflow-y-auto overflow-x-hidden" style={{ maxHeight: "250px" }}>
                 <MarkdownPreview content={round.answerTasks[1].result ?? ""} />
               </div>
               <div className="space-y-1">

@@ -180,12 +180,12 @@ function ContestantCard({
 
   return (
     <Card
-      className={`flex min-h-[260px] flex-col border ${
+      className={`flex min-w-0 w-full min-h-[260px] flex-col border ${
         isWinner ? "border-orange-300/50 bg-orange-950/15" : "border-zinc-800 bg-zinc-950/70"
       } ${isSelected ? "ring-2 ring-emerald-500/70" : ""}`}
     >
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <ModelTag model={task.model} />
           <div className="flex items-center gap-2">
             <Badge variant="outline">{side}</Badge>
@@ -195,8 +195,8 @@ function ContestantCard({
         </div>
       </CardHeader>
 
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
-        <div className="min-h-0 flex-1 overflow-y-auto hide-scrollbar rounded-md border border-zinc-800 bg-black/30 p-4" style={{ maxHeight: "300px" }}>
+      <CardContent className="flex w-full min-w-0 flex-1 flex-col gap-4">
+        <div className="w-full min-w-0 flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar rounded-md border border-zinc-800 bg-black/30 p-4" style={{ maxHeight: "300px" }}>
           {!task.finishedAt ? (
             <p className="text-zinc-500">
               Generating answer <Dots />
@@ -301,11 +301,11 @@ function Arena({
         </CardHeader>
         <CardContent className="space-y-3">
           <a href={round.question.link} target="_blank" rel="noreferrer" className="block hover:opacity-80 transition-opacity">
-            <h1 className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl">
+            <h1 className="text-2xl font-semibold leading-tight text-zinc-50 md:text-3xl break-words">
               {decodeHtmlText(round.question.title)}
             </h1>
           </a>
-          <p className="text-sm leading-6 text-zinc-300">{decodeHtmlText(round.question.bodySnippet)}</p>
+          <p className="text-sm leading-6 text-zinc-300 break-words">{decodeHtmlText(round.question.bodySnippet)}</p>
           <div className="flex flex-wrap gap-2">
             {round.question.tags.slice(0, 10).map((tag) => (
               <Badge key={tag} variant="secondary" className="bg-zinc-800 text-zinc-300">
@@ -496,7 +496,7 @@ function SidePanel({
   }, [state.languageScores, state.scores]);
 
   return (
-    <aside className="space-y-4 lg:sticky lg:top-4 lg:h-fit">
+    <aside className="space-y-4 sticky top-4 h-fit z-40">
       <Card className="border-zinc-800 bg-zinc-950/80">
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between">

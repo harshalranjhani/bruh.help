@@ -61,6 +61,7 @@ body {
   line-height: 1.65;
   color: #e4e4e7;
   word-break: break-word;
+  max-width: 100%;
 }
 
 .md-preview h1,
@@ -113,6 +114,7 @@ body {
   padding: 0.6em 0.8em;
   overflow-x: auto;
   margin: 0.4em 0;
+  max-width: 100%;
 }
 
 .md-preview pre code {
