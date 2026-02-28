@@ -63,7 +63,7 @@ const gameState: GameState = {
   done: false,
   isPaused: false,
   generation: 0,
-  roundDelayMs: 180_000,
+  roundDelayMs: 3_600_000,
 };
 
 // Guardrails
@@ -653,8 +653,8 @@ const server = Bun.serve<WsData>({
       try {
         const body = (await req.json()) as Record<string, unknown>;
         const ms = Number(body.delayMs);
-        if (!Number.isFinite(ms) || ms < 0 || ms > 600_000) {
-          return new Response("delayMs must be 0-600000", { status: 400 });
+        if (!Number.isFinite(ms) || ms < 0 || ms > 3_600_000) {
+          return new Response("delayMs must be 0-3600000", { status: 400 });
         }
         gameState.roundDelayMs = ms;
         log("INFO", "admin", "Round delay changed", { delayMs: ms });

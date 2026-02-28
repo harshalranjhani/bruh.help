@@ -359,6 +359,8 @@ function App() {
                 { label: "3 min", ms: 180_000 },
                 { label: "5 min", ms: 300_000 },
                 { label: "10 min", ms: 600_000 },
+                { label: "30 min", ms: 1_800_000 },
+                { label: "1 hour", ms: 3_600_000 },
               ].map(({ label, ms }) => (
                 <Button
                   key={ms}
@@ -388,7 +390,7 @@ function App() {
               ))}
             </div>
             <p className="mt-3 text-xs text-zinc-500">
-              Current: <strong className="text-zinc-400">{snapshot?.roundDelayMs ? `${Math.round((snapshot.roundDelayMs) / 60_000)} min` : "None"}</strong>. Higher delays = lower API costs.
+              Current: <strong className="text-zinc-400">{snapshot?.roundDelayMs ? (snapshot.roundDelayMs >= 3_600_000 ? `${Math.round(snapshot.roundDelayMs / 3_600_000)} hour` : snapshot.roundDelayMs >= 60_000 ? `${Math.round(snapshot.roundDelayMs / 60_000)} min` : `${Math.round(snapshot.roundDelayMs / 1000)}s`) : "None"}</strong>. Higher delays = lower API costs.
             </p>
           </CardContent>
         </Card>

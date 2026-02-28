@@ -661,6 +661,21 @@ function App() {
     return () => clearInterval(timer);
   }, [state?.nextRoundAt, state?.generation]);
 
+  // Format countdown for display (e.g., "1h 30m", "45m 30s", "30s")
+  const formatCountdown = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}h ${mins}m`;
+    } else if (mins > 0) {
+      return `${mins}m ${secs}s`;
+    } else {
+      return `${secs}s`;
+    }
+  };
+
   if (!connected || !state) {
     return (
       <main className="loading-screen flex min-h-screen items-center justify-center px-4">
@@ -691,11 +706,11 @@ function App() {
           <main className="min-w-0 space-y-4">
             {delaySecondsLeft > 0 ? (
               <Card className="border-sky-800/40 bg-sky-950/20">
-                <CardContent className="flex items-center gap-3 p-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-sky-700/50 bg-sky-900/30">
-                    <span className="text-lg font-bold text-sky-400">{delaySecondsLeft}</span>
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-2 border-sky-600/50 bg-sky-900/40">
+                    <span className="whitespace-nowrap text-base font-bold text-sky-300">{formatCountdown(delaySecondsLeft)}</span>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-sky-300">Next round starts soon!</p>
                     <p className="text-xs text-zinc-500">Delay between rounds to keep API costs low. Sit tight!</p>
                   </div>
